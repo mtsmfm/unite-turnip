@@ -7,7 +7,7 @@ function! s:allsteps()
     let line_num = 0
     for line in lines
       let line_num += 1
-      if line =~ '^ *step [''"].*[''"]'
+      if line =~ '^ *step [''"].*[''"] do'
         let steps += [{
               \ "word": matchstr(line,'\vstep [''"]\zs(.*)\ze[''"]'),
               \ "source": "lines",
