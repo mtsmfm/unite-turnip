@@ -28,7 +28,7 @@ describe 'unite-turnip' do
 
     it {
       is_expected.to eq <<-EOS.strip_heredoc
-        define step
+        define step                                        -- (./spec/steps/step.rb:1)
       EOS
     }
   end

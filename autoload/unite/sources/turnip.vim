@@ -1,4 +1,8 @@
-let s:unite_source = {'name': 'turnip'}
+let s:unite_source = {
+  \ "name":   "turnip",
+  \ "hooks":  {},
+  \ "syntax": "uniteSource__Turnip",
+  \}
 
 function! s:allsteps()
   let steps = []
@@ -8,8 +12,9 @@ function! s:allsteps()
     for line in lines
       let line_num += 1
       if line =~ '^ *step [''"].*[''"] do'
+        let step_name = matchstr(line,'\vstep [''"]\zs(.*)\ze[''"]')
         let steps += [{
-              \ "word": matchstr(line,'\vstep [''"]\zs(.*)\ze[''"]'),
+              \ "word": printf("%-50s -- (%s:%d)", step_name, file, line_num),
               \ "source": "lines",
               \ "kind": "jump_list",
               \ "action__path": file,
@@ -23,6 +28,16 @@ endfunction
 
 function! s:unite_source.gather_candidates(args, context)
   return s:allsteps()
+endfunction
+
+function! s:unite_source.hooks.on_syntax(args, context)
+  syntax match uniteSource__TurnipDescriptionLine / -- .*$/
+        \ contained containedin=uniteSource__Turnip
+  syntax match uniteSource__TurnipDescription /.*$/
+        \ contained containedin=uniteSource__TurnipDescriptionLine
+  syntax match uniteSource__TurnipMarker / -- /
+        \ contained containedin=uniteSource__TurnipDescriptionLine
+  highlight default link uniteSource__TurnipMarker Special
 endfunction
 
 function! unite#sources#turnip#define()
